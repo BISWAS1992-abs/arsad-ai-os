@@ -23,11 +23,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         reply = ask_gemini(user_message)
         await update.message.reply_text(reply)
+        except Exception as e:
+    print(e)
 
-    except Exception:
-        await update.message.reply_text(
-            "❌ দুঃখিত, এখন উত্তর দিতে পারছি না। পরে আবার চেষ্টা করুন।"
-        )
+    await update.message.reply_text(
+        "❌ সাময়িকভাবে AI Service পাওয়া যাচ্ছে না। অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন।"
+    )
+    
+            
+        
 
 
 def main():
