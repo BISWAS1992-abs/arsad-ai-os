@@ -13,7 +13,9 @@ from core.ai_engine import ask_gemini
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🤖 আসসালামু আলাইকুম!\n\nআমি Arsad AI OS.\nআপনার AI Assistant।"
+        "🤖 আসসালামু আলাইকুম!\n\n"
+        "আমি Arsad AI OS.\n"
+        "আপনার AI Assistant।"
     )
 
 
@@ -23,15 +25,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         reply = ask_gemini(user_message)
         await update.message.reply_text(reply)
-        except Exception as e:
-    print(e)
 
-    await update.message.reply_text(
-        "❌ সাময়িকভাবে AI Service পাওয়া যাচ্ছে না। অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন।"
-    )
-    
-            
-        
+    except Exception as e:
+        print(f"Error: {e}")
+
+        await update.message.reply_text(
+            "❌ সাময়িকভাবে AI Service পাওয়া যাচ্ছে না। অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন।"
+        )
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
         MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
     )
 
-    print("✅ Arsad AI OS Started")
+    print("✅ Arsad AI OS Started Successfully")
 
     app.run_polling()
 
