@@ -10,7 +10,7 @@ from telegram.ext import (
 
 from config import TELEGRAM_BOT_TOKEN
 from core.ai_engine import ask_gemini
-
+from core.memory import init_db
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
