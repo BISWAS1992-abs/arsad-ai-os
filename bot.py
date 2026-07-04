@@ -40,7 +40,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await loading.edit_text(
             "❌ সাময়িকভাবে AI Service পাওয়া যাচ্ছে না। অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন।"
         )
+        
 def main():
+   init_db()
     app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
