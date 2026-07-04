@@ -23,18 +23,23 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
 
+    # Loading Message
+    loading = await update.message.reply_text(
+        "🤔 আপনার প্রশ্নটি বিশ্লেষণ করছি..."
+    )
+
     try:
         reply = ask_gemini(user_message)
-        await update.message.reply_text(reply)
+
+        # Loading Message Edit হবে
+        await loading.edit_text(reply)
 
     except Exception as e:
         print(f"Error: {e}")
 
-        await update.message.reply_text(
+        await loading.edit_text(
             "❌ সাময়িকভাবে AI Service পাওয়া যাচ্ছে না। অনুগ্রহ করে একটু পরে আবার চেষ্টা করুন।"
         )
-
-
 def main():
     app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
