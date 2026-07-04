@@ -45,6 +45,7 @@ def main():
    init_db()
 
 
+
     
     app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
