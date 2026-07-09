@@ -29,3 +29,35 @@ def add_user(user_id):
 
     conn.commit()
     conn.close()
+
+
+def save_name(user_id, name):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE users SET name=? WHERE user_id=?",
+        (name, user_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def get_name(user_id):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT name FROM users WHERE user_id=?",
+        (user_id,)
+    )
+
+    result = cursor.fetchone()
+
+    conn.close()
+
+    if result:
+        return result[0]
+
+    return None
