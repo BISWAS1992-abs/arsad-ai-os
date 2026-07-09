@@ -33,32 +33,24 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     user_message = update.message.text.strip()
 
-    # Loading Message
     loading = await update.message.reply_text(
         "🤔 আপনার প্রশ্নটি বিশ্লেষণ করছি..."
     )
 
     try:
-        # User Add
         add_user(user_id)
 
-        # নাম সংরক্ষণ
-        if user_message.startswith("আমার নাম "):
-            name = user_message.replace("আমার নাম", "").strip()
-
-            save_name(user_id, name)
-
-            await loading.edit_text(
-                f"😊 ঠিক আছে। আমি মনে রাখলাম।\n\nআপনার নাম {name}।"
-            )
-            return
-
-        # নাম জিজ্ঞেস করলে
-        if user_message in [
+        # ----------------------------
+        # আগে "আমার নাম কী?" চেক করবে
+        # ----------------------------
+        if user_message.lower() in [
             "আমার নাম কি",
             "আমার নাম কী",
+            "আমার নাম কি?",
+            "আমার নাম কী?",
             "আমার নাম?",
         ]:
+
             name = get_name(user_id)
 
             if name:
@@ -67,12 +59,32 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
             else:
                 await loading.edit_text(
-                    "আমি এখনও আপনার নাম জানি না।\n\nআপনি লিখুন:\nআমার নাম আরসাদ"
+                    "🙂 আমি এখনও আপনার নাম জানি না।\n\nউদাহরণ:\nআমার নাম আরসাদ"
                 )
 
             return
 
-        # Gemini উত্তর
+        # ----------------------------
+        # এরপর "আমার নাম ..."
+        # ----------------------------
+        if user_message.startswith("আমার নাম "):
+
+            name = user_message.replace("আমার নাম", "", 1).strip()
+
+            # "কি" বা "কী" হলে Save করবে না
+            if name.lower() not in ["কি", "কী", "কি?", "কী?"]:
+
+                save_name(user_id, name)
+
+                await loading.edit_text(
+                    f"😊 ঠিক আছে। আমি মনে রাখলাম।\n\nআপনার নাম {name}।"
+                )
+
+                return
+
+        # ----------------------------
+        # অন্য সব Gemini
+        # ----------------------------
         reply = ask_gemini(user_message)
 
         await loading.edit_text(reply)
