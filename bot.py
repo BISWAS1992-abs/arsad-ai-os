@@ -14,12 +14,13 @@ from core.memory import (
     add_user,
     save_name,
     get_name,
+    save_goal,
+    get_goal,
 )
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-
     add_user(user_id)
 
     await update.message.reply_text(
@@ -40,9 +41,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         add_user(user_id)
 
-        # ----------------------------
-        # আগে "আমার নাম কী?" চেক করবে
-        # ----------------------------
+        # =========================
+        # NAME MEMORY
+        # =========================
+
         if user_message.lower() in [
             "আমার নাম কি",
             "আমার নাম কী",
@@ -54,9 +56,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             name = get_name(user_id)
 
             if name:
-                await loading.edit_text(
-                    f"😊 আপনার নাম {name}।"
-                )
+                await loading.edit_text(f"😊 আপনার নাম {name}।")
             else:
                 await loading.edit_text(
                     "🙂 আমি এখনও আপনার নাম জানি না।\n\nউদাহরণ:\nআমার নাম আরসাদ"
@@ -64,14 +64,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             return
 
-        # ----------------------------
-        # এরপর "আমার নাম ..."
-        # ----------------------------
         if user_message.startswith("আমার নাম "):
 
             name = user_message.replace("আমার নাম", "", 1).strip()
 
-            # "কি" বা "কী" হলে Save করবে না
             if name.lower() not in ["কি", "কী", "কি?", "কী?"]:
 
                 save_name(user_id, name)
@@ -82,9 +78,48 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 return
 
-        # ----------------------------
-        # অন্য সব Gemini
-        # ----------------------------
+        # =========================
+        # GOAL MEMORY
+        # =========================
+
+        if user_message.lower() in [
+            "আমার লক্ষ্য কি",
+            "আমার লক্ষ্য কী",
+            "আমার লক্ষ্য কি?",
+            "আমার লক্ষ্য কী?",
+        ]:
+
+            goal = get_goal(user_id)
+
+            if goal:
+                await loading.edit_text(
+                    f"🎯 আপনার লক্ষ্য:\n{goal}"
+                )
+            else:
+                await loading.edit_text(
+                    "🙂 আপনি এখনও কোনো লক্ষ্য সংরক্ষণ করেননি।\n\nউদাহরণ:\nআমার লক্ষ্য AI শেখা"
+                )
+
+            return
+
+        if user_message.startswith("আমার লক্ষ্য "):
+
+            goal = user_message.replace("আমার লক্ষ্য", "", 1).strip()
+
+            if goal.lower() not in ["কি", "কী", "কি?", "কী?"]:
+
+                save_goal(user_id, goal)
+
+                await loading.edit_text(
+                    f"🎯 ঠিক আছে। আমি মনে রাখলাম।\n\nআপনার লক্ষ্য:\n{goal}"
+                )
+
+                return
+
+        # =========================
+        # GEMINI
+        # =========================
+
         reply = ask_gemini(user_message)
 
         await loading.edit_text(reply)
