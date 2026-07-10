@@ -26,9 +26,21 @@ SYSTEM_PROMPT = """
 """
 
 
-def ask_gemini(prompt: str) -> str:
+def ask_gemini(prompt: str, user_name=None, user_goal=None) -> str:
+
+    memory = ""
+
+    if user_name:
+        memory += f"ব্যবহারকারীর নাম: {user_name}\n"
+
+    if user_goal:
+        memory += f"ব্যবহারকারীর লক্ষ্য: {user_goal}\n"
+
     full_prompt = f"""
 {SYSTEM_PROMPT}
+
+ব্যবহারকারীর তথ্য:
+{memory}
 
 ব্যবহারকারীর প্রশ্ন:
 {prompt}
