@@ -56,6 +56,10 @@ def get_name(user_id):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
+    # Debug
+    cursor.execute("SELECT * FROM users")
+    print("DEBUG USERS:", cursor.fetchall())
+
     cursor.execute(
         "SELECT name FROM users WHERE user_id=?",
         (user_id,)
